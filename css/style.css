@@ -1,0 +1,60 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0;
+    background-color: #222222;
+    color: #ffffff;
+}
+.connect {
+    width: 100%;
+    height: 100%; 
+}
+
+.background{
+	width: 100%;
+	height: 100%;
+}
+
+#button-turn{
+	position: absolute;
+	width: 110px;
+	height: 110px;
+	left: 126px;
+	top: 123px;
+	border-radius: 50%;
+	background-color: #51E5DA;
+	z-index: 9999;
+/* 	opacity: .1; */
+/* 	transition: opacity .2s ease-in-out; */
+}
+
+/* #button-turn:active { */
+/* 	opacity: .8; */
+/* 	transition: opacity .2s ease-in-out; */
+/* } */
+
+#button-turn.off{
+	opacity: 0;
+	transition: opacity .2s ease-in-out;
+}
+
+#button-turn.on{
+	
+	opacity: .8;
+	transition: opacity .2s ease-in-out;
+}
+
+.animation{
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100;
+}
+
+.animation.off{
+	display: none;	
+}
+}
