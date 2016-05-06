@@ -1,23 +1,14 @@
 var animationStartNum = 117;
 var animationEndNum = 161;
 var animationActualNum; 
-var animationTime = 50;
+var animationTime = 40;
 var animationImage;
-var mainPage;
 var turnButton;
 var turnAnimationTime = 400;
 
 
-window.onload = function() {
-	animationActualNum = animationStartNum;
 
-    document.addEventListener('tizenhwkey', function(e) {
-        if (e.keyName === "back") {
-            tau.changePage("connect.html");
-        }
-    });
-
-    mainPage = document.querySelector('#main');
+var initMain = function(){
 
     animationImage = document.querySelector('#animation');
 	startAnimation();
@@ -27,13 +18,28 @@ window.onload = function() {
 	turnButton.addEventListener("click", function() {
     	turn();
     });
-   
 };
+pages.init.main = initMain;
+
+var writeSuccess = function(value)
+{
+   console.log("Written");
+};
+
+var writeFail = function(error)
+{
+   console.log("writeValue() failed: " + error);
+};
+
 
 var turn = function(){
 	console.log("turn!!");
 
 	startButtonAnimation();
+	property.writeValue([1], writeSuccess, writeFail);
+	setTimeout(function(){
+		property.writeValue([0], writeSuccess, writeFail);
+	}, 3000)
 };
 
 var startButtonAnimation = function(){

@@ -9,15 +9,23 @@
     <title>Blindcap</title>
 
     <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script src="js/general.js"></script>
     <script src="js/connect.js"></script>
+    <script src="js/main.js"></script>
+    
 </head>
 
 <body>
-    <div id="connect" class="connect">
-<!--     	<a href="main.html"> -->
-    		<image id="BLEconnect" src="images/blindcap_bg.png" class="background"/>
-<!--    		</a> -->
-   
+    <div id="connect" class="">
+		<image id="BLEscan" src="images/blindcap_bg.png" class="background"/>
+		<div id="device-list" class="popup off">
+		</div>
+    </div>
+    
+    <div id="main" class="hidden">
+  		<image src="images/circles_turn.png" class="background"/>
+  		<div id="button-turn" class="off"></div>
+  		<image src="images/blue_circles_00117.png" id="animation" class="animation off"/>
     </div>
    
 </body>
