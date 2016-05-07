@@ -1,86 +1,152 @@
-var main_page = null;
-var blue_circles = null;
-var turn_button = null;
+var MainPage = (function () {
+    
+    var init = function(){
+    	console.log("init main");
+    	page = document.querySelector('#main');
+    	turn_button = document.querySelector('#button-turn');
+		turn_button.addEventListener("touchstart", turnButtonTouchStart, false);
+		turn_button.addEventListener("touchend", turnButtonTouchEnd, false);
+		blue_circles = document.querySelector('#animation');
+		is_turning = false;
+    }
 
-
-BLINDCAP.pages.main = {
-	instance: function(){
-		return document.querySelector('#main');
-	},
-	init: function(){
-		main_page = BLINDCAP.pages.main;
-		blue_circles = main_page.elements.blue_circles;
-		turn_button = main_page.elements.turn_button;
-		turn_button.listeners.set();
-	},
-	elements: {
-		blue_circles: {
-			instance: function(){
-				return document.querySelector('#animation');
-			},
-			animation: {
-				running: false,
-				start_id: 117,
-				end_id: 161,
-				actual_id: 117,
-				time: 40,	
-				timeout: null,
-				setTimeout: function(){
-					blue_circles.animation.timeout = setTimeout(blue_circles.animation.change, blue_circles.animation.time);
-				},
-				start: function(){
-					blue_circles.instance.className = "animation";
-					blue_circles.animation.setTimeout();
-				},
-				change: function(){
-					blue_circles.animation.actual_id = (blue_circles.animation.actual_id < blue_circles.animation.end_id) ? blue_circles.animation.actual_id + 1 : blue_circles.animation.start_id;
-					blue_circles.instance.src = "images/blue_circles_00" + blue_circles.animation.actual_id + ".png";
-					blue_circles.animation.setTimeout();
-				},
-				end: function(){
-					blue_circles.instance.className = "";
-					blue_circles.animation.actual_id = blue_circles.animation.start_id;
-					//TODO remove Timeout
-				}
-			}
-		},
-		turn_button: {
-			instance: function(){
-				return document.querySelector('#button-turn');
-			},
-			animation: {
-				timeout: null,
-				time: 400,
-				setTimeout: function(){
-					turn_button.animation.timeout = setTimeout(turn_button.animation.end, turn_button.animation.time);
-				},
-				start: function(){
-					turn_button.instance.className = "on";
-					turn_button.animation.setTimeout();
-				},
-				end: function(){
-					turn_button.instance.className = "off";
-				}
-			},
-			turn: function(){
-				console.log("turn!!");
-
-				turn_button.animation.start();
-				BLINDCAP.ble.gatt.characteristic.writeValue([1], BLINDCAP.ble.gatt.write.success, BLINDCAP.ble.gatt.write.fail);
-				setTimeout(function(){
-					BLINDCAP.ble.gatt.characteristic.writeValue([0], BLINDCAP.ble.gatt.write.success, BLINDCAP.ble.gatt.write.fail);
-				}, 3000)
-			},
-			listeners: {
-				set: function(){
-					turn_button.addEventListener("click", turn_button.listeners.click);
-				},
-				click: function() {
-			    	turn();
-			    }
-			}
-			
+    var destroy = function(){
+    	turn_button.removeEventListener("touchstart", turnButtonTouchStart);
+		turn_button.removeEventListener("touchend", turnButtonTouchEnd);
+		if(touchtimer) {
+	       clearTimeout(touchtimer);
+	       flagLock = false;
+	    }
+		if(turn_button_animation.timeout){
+			clearTimeout(turn_button_animation.timeout);
 		}
+		if(blue_circles_animation.timeout){
+			clearTimeout(blue_circles_animation.timeout);
+		}
+    }
+    
+    var page;
+    var turn_button;
+    var blue_circles;
+    var is_turning = false;
+    
+    var turn_button_animation = {
+		timeout: null,
+		time: 400,
+    }
+ 
+    var turn = function(){
+		console.log("turn!!");
+		if (!is_turning){
+			is_turning = true;
+			turnButtonAnimationStart();
+			BluetoothLowEnergy.gattWrite([1]);
+			
+			
+			setTimeout(function(){
+				BluetoothLowEnergy.gattWrite([0]);
+				is_turning = false;
+			}, 3000)
+		}
+	};
+    
+    var turnButtonSetTimeout = function(){
+		turn_button_animation.timeout = setTimeout(turnButtonAnimationEnd, turn_button_animation.time);
+	};
+	
+	var turnButtonAnimationStart =  function(){
+		turn_button.className = "on";
+		turnButtonSetTimeout();
+	};
+	
+	var turnButtonAnimationEnd = function(){
+		turn_button.className = "off";
+	};
+    
+	var blue_circles_animation = {
+		running: false,		
+		start_id: 117,
+		end_id: 161,
+		actual_id: 117,
+		time: 40,	
+		timeout: null,
+	};
+	
+	var blueCirclesSetTimeout = function(){
+		blue_circles_animation.timeout = setTimeout(changeBlueCirclesAnimation, blue_circles_animation.time);
+	};
+	
+	var startBlueCirclesAnimation = function(){
+		blue_circles.className = "animation";
+		blueCirclesSetTimeout();
+	};
+	
+	var changeBlueCirclesAnimation = function(){
+		blue_circles_animation.actual_id = (blue_circles_animation.actual_id < blue_circles_animation.end_id) ? blue_circles_animation.actual_id + 1 : blue_circles_animation.start_id;
+		blue_circles.src = "images/blue_circles_00" + blue_circles_animation.actual_id + ".png";
+		blueCirclesSetTimeout()
+	};
+	
+	var endBlueCirclesAnimation = function(){
+		blue_circles.className = "animation off";
+		blue_circles_animation.actual_id = blue_circles_animation.start_id;
+	    clearTimeout(blue_circles_animation.timeout);
+	}    
+	
+	var touchtimer, 
+    flagLock,
+    is_long_click = false,
+    touchduration = 500;
+	
+	var turnButtonLongClickListener = function() { 
+		is_long_click = true;
+//	    alert("Long Touch!!"); 
+	    if (blue_circles_animation.running){
+    		blue_circles_animation.running = false
+    	    endBlueCirclesAnimation();
+	    }
+	};
+
+	function turnButtonTouchStart(e) {
+	    e.preventDefault();
+	    console.log("touchStart");
+	    
+	    if(flagLock){
+		return;
+	    }
+		
+	   touchtimer = setTimeout(turnButtonLongClickListener, touchduration); 
+	   flagLock = true;
 	}
-};
+	
+	function turnButtonTouchEnd() {
+		console.log("touchEnd");
+		console.log(touchtimer);
+	    if (touchtimer){
+	       clearTimeout(touchtimer);
+	       touchtimer = null;
+	       flagLock = false;
+	    } 
+	    if (!is_long_click){
+	    	if (!blue_circles_animation.running){
+	    		blue_circles_animation.running = true;
+	    		startBlueCirclesAnimation();
+	    	}
+	    	turn();
+	    }
+    	
+    	is_long_click = false;
+	    
+	}
+    
+    return {
+    	init: init,
+    	destroy: destroy,
+        getPage: function(){return page;},
+    };
+})();
+
+
+
+		
 

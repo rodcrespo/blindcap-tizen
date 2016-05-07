@@ -1,30 +1,51 @@
 var BLINDCAP = {
 	pages: {
 		change: function(newPage){
+			console.log("changing");
 			if (BLINDCAP.pages.actual){
-				BLINDCAP.pages.actual.className = "hidden";
+				BLINDCAP.pages.actual.getPage().className = "hidden";
+				BLINDCAP.pages.actual.destroy();
 			}
 			BLINDCAP.pages.actual = BLINDCAP.pages.get(newPage);
-			BLINDCAP.pages.actual.className = "";
-			BLINDCAP.pages.get(newPage).init();
+			BLINDCAP.pages.actual.init();
+			console.log(BLINDCAP.pages.actual);
+			BLINDCAP.pages.actual.getPage().className = "";
+			
 		},
 		actual: null,
 		get: function(page){
+			console.log(BLINDCAP.pages);
+			console.log(BLINDCAP.pages[page]);
 			return BLINDCAP.pages[page];
-		}
-	}
+		},
+		main: MainPage,
+		connect: ConnectPage
+	},
+	ble: BluetoothLowEnergy
 };
 
+
 window.onload = function() {
+	console.log(BluetoothLowEnergy);
+	document.addEventListener("touchmove", function(event){
+		  event.preventDefault();		 
+	}, false);
+	
     document.addEventListener('tizenhwkey', function(e) {
+    	console.log(e.keyName);
         if (e.keyName === "back") {
-            try {
-            	BLINDCAP.ble.devices.selected.disconnect();
-                tizen.application.getCurrentApplication().exit();
-            } catch (ignore) {}
+        	console.log("back");
+        	BluetoothLowEnergy.disconnect();
+        	if (BLINDCAP.pages.actual === BLINDCAP.pages.main){
+        	    BLINDCAP.pages.change("connect");
+        	} else{
+	            try {
+	                window.tizen.application.getCurrentApplication().exit();
+	            } catch (ignore) {}
+        	}
         }
     });
-
+    
     BLINDCAP.pages.change("connect");
 };
 
