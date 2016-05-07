@@ -70,7 +70,7 @@ var BluetoothLowEnergy = (function() {
 	   ondisconnected: function(device) 
 	   {
 	      console.log("Disconnected from the device " + device.name + " [" + device.address + "]");
-	      selected_device.removeConnectStateChangeListener(watchId);
+	      selected_device.removeConnectStateChangeListener(watch_id);
 	      connect(selected_device);
 	   }
 	};

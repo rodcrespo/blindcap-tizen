@@ -21,7 +21,9 @@ var ConnectPage = (function () {
 	var status = "idle";
     
 	var scanButtonClickListener = function() {
-		BluetoothLowEnergy.startScan();
+		if (status == "idle"){
+			BluetoothLowEnergy.startScan();
+		}
     };
     
     var startConnectMessagePulse = function() {

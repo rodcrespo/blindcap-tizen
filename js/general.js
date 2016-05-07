@@ -26,17 +26,13 @@ var BLINDCAP = {
 
 
 window.onload = function() {
-	console.log(BluetoothLowEnergy);
-	document.addEventListener("touchmove", function(event){
-		  event.preventDefault();		 
-	}, false);
 	
     document.addEventListener('tizenhwkey', function(e) {
     	console.log(e.keyName);
         if (e.keyName === "back") {
         	console.log("back");
-        	BluetoothLowEnergy.disconnect();
         	if (BLINDCAP.pages.actual === BLINDCAP.pages.main){
+            	BluetoothLowEnergy.disconnect();
         	    BLINDCAP.pages.change("connect");
         	} else{
 	            try {
