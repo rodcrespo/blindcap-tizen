@@ -1,10 +1,18 @@
 var BluetoothLowEnergy = (function() {
 
-	var adapter = function() {
-		return tizen.bluetooth.getLEAdapter();
-	}();
+	var development_mode;
+	
+	var adapter;
 
 	var init = function() {
+		development_mode = BLINDCAP.development_mode;
+		adapter = function() {
+			if (!development_mode) {
+				return tizen.bluetooth.getLEAdapter();
+			} else {
+				return "no adapter";
+			}
+		}();
 	};
 
 	var device_list = [];
@@ -127,8 +135,9 @@ var BluetoothLowEnergy = (function() {
 	};
 
 	var gattWrite = function(value) {
-		gatt_characteristic.writeValue(value, gattWriteSuccess,
-				gattWriteFailure);
+		if (!development_mode){
+			gatt_characteristic.writeValue(value, gattWriteSuccess, gattWriteFailure);
+		}
 	};
 
 	var getSelectedDevice = function() {

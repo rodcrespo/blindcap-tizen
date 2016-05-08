@@ -8,31 +8,32 @@ var BLINDCAP = {
 			}
 			BLINDCAP.pages.actual = BLINDCAP.pages.get(newPage);
 			BLINDCAP.pages.actual.init();
-			console.log(BLINDCAP.pages.actual);
 			BLINDCAP.pages.actual.getPage().className = "";
 			
 		},
 		actual: null,
 		get: function(page){
-			console.log(BLINDCAP.pages);
-			console.log(BLINDCAP.pages[page]);
 			return BLINDCAP.pages[page];
 		},
 		main: MainPage,
 		connect: ConnectPage
 	},
-	ble: BluetoothLowEnergy
+	ble: BluetoothLowEnergy,
+	development_mode: true
 };
 
 
 window.onload = function() {
+	BluetoothLowEnergy.init();
 	
     document.addEventListener('tizenhwkey', function(e) {
     	console.log(e.keyName);
         if (e.keyName === "back") {
         	console.log("back");
         	if (BLINDCAP.pages.actual === BLINDCAP.pages.main){
-            	BluetoothLowEnergy.disconnect();
+            	if (!BLINDCAP.development_mode){
+            		BluetoothLowEnergy.disconnect();
+            	}
         	    BLINDCAP.pages.change("connect");
         	} else{
 	            try {

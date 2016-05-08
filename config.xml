@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns:tizen="http://tizen.org/ns/widgets" xmlns="http://www.w3.org/ns/widgets" id="http://samsung.com/blindcap" version="1.0.0" viewmodes="maximized">
-    <tizen:application id="zkK6umKyQQ.blindcap" package="zkK6umKyQQ" required_version="2.3.1"/>
+    <tizen:application id="MDWs2PBzkK.blindcap" package="MDWs2PBzkK" required_version="2.3.1"/>
     <content src="connect.html"/>
     <feature name="http://tizen.org/feature/screen.size.all"/>
     <icon src="blindcap_bg.png" height="117" width="117"/>
