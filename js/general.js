@@ -3,12 +3,24 @@ var BLINDCAP = {
 		change: function(newPage){
 			console.log("changing");
 			if (BLINDCAP.pages.actual){
-				BLINDCAP.pages.actual.getPage().className = "hidden";
-				BLINDCAP.pages.actual.destroy();
+				var oldPage = BLINDCAP.pages.actual;
+				oldPage.getPage().className = "page out";
+				oldPage.destroy();
+				
+				BLINDCAP.pages.actual = BLINDCAP.pages.get(newPage);
+				BLINDCAP.pages.actual.init();
+
+				setTimeout(function(){
+					oldPage.getPage().className = "page hidden";
+					BLINDCAP.pages.actual.getPage().className = "page";
+				}, 500);
+				
+			} else{
+				BLINDCAP.pages.actual = BLINDCAP.pages.get(newPage);
+				BLINDCAP.pages.actual.init();
+				BLINDCAP.pages.actual.getPage().className = "page";
+
 			}
-			BLINDCAP.pages.actual = BLINDCAP.pages.get(newPage);
-			BLINDCAP.pages.actual.init();
-			BLINDCAP.pages.actual.getPage().className = "";
 			
 		},
 		actual: null,
@@ -19,7 +31,7 @@ var BLINDCAP = {
 		connect: ConnectPage
 	},
 	ble: BluetoothLowEnergy,
-	development_mode: true
+	development_mode: false
 };
 
 

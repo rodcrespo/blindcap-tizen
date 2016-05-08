@@ -6,15 +6,19 @@ var ConnectPage = (function () {
     	development_mode = BLINDCAP.development_mode;
     	console.log("init connect");
     	page = document.querySelector('#connect');
-    	scan_button = document.querySelector('#BLEscan');
+    	scan_button = document.querySelector('#connect-bg-3');
 		scan_button.addEventListener("click", scanButtonClickListener);
 		devices_box = document.querySelector('#device-list');
-		connect_message = document.querySelector('#connect-message');		
+		connect_message = document.querySelector('#connect-message');
+		startConnectBackgroundAnimation();
     }
     
     var destroy = function(){
 		scan_button.removeEventListener("click", scanButtonClickListener);
-		stopConnectMessagePulse;
+		stopConnectMessagePulse();
+		endConnectBackgroundAnimation();
+		document.querySelector('#connect-bg-' + connect_background_animation.start_id ).className = "background";
+		document.querySelector('#connect-bg-' + connect_background_animation.end_id ).className = "background off";
     }
     
     var page;
@@ -69,6 +73,47 @@ var ConnectPage = (function () {
 
     	}
     }
+    
+	var connect_background_animation = {
+			running: false,		
+			start_id: 0,
+			end_id: 3,
+			actual_id: 0,
+			time: 400,	
+			timeout: null,
+		};
+	
+	var connectBackgroundSetTimeout = function(){
+		connect_background_animation.timeout = setTimeout(changeConnectBackgroundAnimation, connect_background_animation.time);
+	};
+	
+	var startConnectBackgroundAnimation = function(){
+		connect_background_animation.running = true;
+		block_turn = true;
+		connectBackgroundSetTimeout();
+	};
+	
+	var changeConnectBackgroundAnimation = function(){
+		if (connect_background_animation.actual_id < connect_background_animation.end_id) {
+			if (connect_background_animation.actual_id > connect_background_animation.start_id) {
+	    		document.querySelector('#connect-bg-' + (connect_background_animation.actual_id - 1)).className = "background off";
+	    	};
+			connect_background_animation.actual_id++; 
+	    	document.querySelector('#connect-bg-' + connect_background_animation.actual_id).className = "background";
+	    	connectBackgroundSetTimeout();
+		} else {
+			document.querySelector('#connect-bg-' + (connect_background_animation.actual_id - 1)).className = "background off";
+			endConnectBackgroundAnimation();
+		}
+	}
+	
+	var endConnectBackgroundAnimation = function(){
+		connect_background_animation.running = false;
+		connect_background_animation.actual_id = connect_background_animation.start_id
+		if(connect_background_animation.timeout){
+			clearTimeout(connect_background_animation.timeout);
+		}
+	};
  
     return {
     	init: init,

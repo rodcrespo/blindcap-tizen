@@ -77,6 +77,15 @@ body {
 	transition: opacity 140ms ease-in-out;
 }
 
+.page{
+	opacity: 1;
+}
+
+.page.out .background{
+	transition: opacity 500ms ease-in-out;
+	opacity: 0;
+}
+
 .background.off{
 	opacity: 0;
 }
