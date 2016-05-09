@@ -38,6 +38,7 @@ var MainPage = (function () {
     var block_turn = false;
     
     var turn_button_animation = {
+    	running: false,		
 		timeout: null,
 		time: 100,
     }
@@ -45,7 +46,6 @@ var MainPage = (function () {
     var turn = function(){
 		console.log("turn!!");
 		if (!block_turn){
-			console.log("not blocked");
 			block_turn = true;
 			startTurnButtonAnimation();
 			BluetoothLowEnergy.gattWrite([1]);
@@ -63,12 +63,14 @@ var MainPage = (function () {
 	
 	var startTurnButtonAnimation =  function(){
 //		turn_button.className = "on";
+		turn_button_animation.running = true;
 		document.querySelector('#circles-bg-' + circles_turn_animation.end_id ).src = "images/circles_turn/circles_turn_7_pulse.png";
-		turnButtonSetTimeout();
+//		turnButtonSetTimeout();
 	};
 	
 	var endTurnButtonAnimation = function(){
 //		turn_button.className = "off";
+		turn_button_animation.running = false;
 		document.querySelector('#circles-bg-' + circles_turn_animation.end_id ).src = "images/circles_turn/circles_turn_7.png";
 		if(turn_button_animation.timeout){
 			clearTimeout(turn_button_animation.timeout);
@@ -94,6 +96,7 @@ var MainPage = (function () {
 	};
 	
 	var changeBlueCirclesAnimation = function(){
+		blue_circles.className = "animation" + (turn_button_animation.running ? " gray" : "");
 		blue_circles_animation.actual_id = (blue_circles_animation.actual_id < blue_circles_animation.end_id) ? blue_circles_animation.actual_id + 1 : blue_circles_animation.start_id;
 		blue_circles.src = "images/blue_circles/blue_circles_00" + blue_circles_animation.actual_id + ".png";
 		blueCirclesSetTimeout()
@@ -173,26 +176,28 @@ var MainPage = (function () {
 		return;
 	    }
 		
-	   touchtimer = setTimeout(turnButtonLongClickListener, touchduration); 
+//	   touchtimer = setTimeout(turnButtonLongClickListener, touchduration); 
 	   flagLock = true;
+	   
+	   if (!blue_circles_animation.running){
+   			blue_circles_animation.running = true;
+   			startBlueCirclesAnimation();
+	   }
+	   turn();
 	}
 	
 	function turnButtonTouchEnd() {
 		console.log("touchEnd");
-		console.log(touchtimer);
-	    if (touchtimer){
-	       clearTimeout(touchtimer);
-	       touchtimer = null;
+//	    if (touchtimer){
+//	       clearTimeout(touchtimer);
+//	       touchtimer = null;
 	       flagLock = false;
-	    } 
-	    if (!is_long_click){
-	    	if (!blue_circles_animation.running){
-	    		blue_circles_animation.running = true;
-	    		startBlueCirclesAnimation();
-	    	}
-	    	turn();
-	    }
-    	
+//	    } 
+//	    if (!is_long_click){
+//	    	
+//	    }
+		endTurnButtonAnimation();
+
     	is_long_click = false;
 	    
 	}

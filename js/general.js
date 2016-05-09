@@ -31,7 +31,7 @@ var BLINDCAP = {
 		connect: ConnectPage
 	},
 	ble: BluetoothLowEnergy,
-	development_mode: false
+	development_mode: true
 };
 
 
