@@ -31,7 +31,7 @@ var BLINDCAP = {
 		connect: ConnectPage
 	},
 	ble: BluetoothLowEnergy,
-	development_mode: true
+	development_mode: false
 };
 
 
@@ -43,10 +43,10 @@ window.onload = function() {
         if (e.keyName === "back") {
         	console.log("back");
         	if (BLINDCAP.pages.actual === BLINDCAP.pages.main){
+        	    BLINDCAP.pages.change("connect");
             	if (!BLINDCAP.development_mode){
             		BluetoothLowEnergy.disconnect();
             	}
-        	    BLINDCAP.pages.change("connect");
         	} else{
 	            try {
 	                window.tizen.application.getCurrentApplication().exit();

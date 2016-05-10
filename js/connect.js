@@ -17,6 +17,7 @@ var ConnectPage = (function () {
 		scan_button.removeEventListener("click", scanButtonClickListener);
 		stopConnectMessagePulse();
 		endConnectBackgroundAnimation();
+		changeStatus("idle");
 		document.querySelector('#connect-bg-' + connect_background_animation.start_id ).className = "background";
 		document.querySelector('#connect-bg-' + connect_background_animation.end_id ).className = "background off";
     }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns:tizen="http://tizen.org/ns/widgets" xmlns="http://www.w3.org/ns/widgets" id="http://samsung.com/blindcap" version="1.0.0" viewmodes="maximized">
-    <tizen:application id="MDWs2PBzkK.blindcap" package="MDWs2PBzkK" required_version="2.3.1"/>
+    <tizen:application id="otgx1rdwEx.SamsungBlindCap" package="otgx1rdwEx" required_version="2.3.1"/>
     <content src="main.html"/>
     <feature name="http://tizen.org/feature/screen.size.all"/>
     <icon src="blindcap_bg.png" height="117" width="117"/>
-    <name>blindcap</name>
+    <name>Samsung Blind Cap</name>
     <tizen:privilege name="http://tizen.org/privilege/application.launch"/>
     <tizen:privilege name="http://tizen.org/privilege/bluetooth.admin"/>
     <tizen:profile name="wearable"/>

@@ -9,7 +9,8 @@ var MainPage = (function () {
     	turn_button = document.querySelector('#button-turn');
 		turn_button.addEventListener("touchstart", turnButtonTouchStart, false);
 		turn_button.addEventListener("touchend", turnButtonTouchEnd, false);
-		blue_circles = document.querySelector('#animation');
+		blue_circles = document.querySelector('#blue-circles');
+		gray_circles = document.querySelector('#gray-circles');
 		block_turn = false;
 		startCirclesTurnAnimation();
     }
@@ -35,6 +36,7 @@ var MainPage = (function () {
     var page;
     var turn_button;
     var blue_circles;
+    var gray_circles;
     var block_turn = false;
     
     var turn_button_animation = {
@@ -79,9 +81,9 @@ var MainPage = (function () {
     
 	var blue_circles_animation = {
 		running: false,		
-		start_id: 117,
-		end_id: 161,
-		actual_id: 117,
+		start_id: 0,
+		end_id: 44,
+		actual_id: 0,
 		time: 40,	
 		timeout: null,
 	};
@@ -96,9 +98,17 @@ var MainPage = (function () {
 	};
 	
 	var changeBlueCirclesAnimation = function(){
-		blue_circles.className = "animation" + (turn_button_animation.running ? " gray" : "");
+		if (turn_button_animation.running){
+			blue_circles.className = "animation off";
+			gray_circles.className = "animation";
+		} else {
+			blue_circles.className = "animation";
+			gray_circles.className = "animation off";
+		}
+		
 		blue_circles_animation.actual_id = (blue_circles_animation.actual_id < blue_circles_animation.end_id) ? blue_circles_animation.actual_id + 1 : blue_circles_animation.start_id;
-		blue_circles.src = "images/blue_circles/blue_circles_00" + blue_circles_animation.actual_id + ".png";
+		blue_circles.src = "images/blue_circles/" + blue_circles_animation.actual_id + ".png";
+		gray_circles.src = "images/gray_circles/" + blue_circles_animation.actual_id + ".png";
 		blueCirclesSetTimeout()
 	};
 	
@@ -106,7 +116,7 @@ var MainPage = (function () {
 		blue_circles.className = "animation off";
 		blue_circles_animation.actual_id = blue_circles_animation.start_id;
 		blue_circles_animation.running = false;
-		blue_circles.src = "images/blue_circles/blue_circles_00" + blue_circles_animation.actual_id + ".png";
+		blue_circles.src = "images/blue_circles/" + blue_circles_animation.actual_id + ".png";
 		if(blue_circles_animation.timeout){
 			clearTimeout(blue_circles_animation.timeout);
 		}
@@ -173,7 +183,7 @@ var MainPage = (function () {
 	    console.log("touchStart");
 	    
 	    if(flagLock){
-		return;
+	    	return;
 	    }
 		
 //	   touchtimer = setTimeout(turnButtonLongClickListener, touchduration); 

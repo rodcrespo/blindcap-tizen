@@ -16,6 +16,7 @@ var BluetoothLowEnergy = (function() {
 	};
 
 	var device_list = [];
+	var address_list = [];
 	var selected_device;
 	var watch_id = null;
 	var scan_time = 15000;
@@ -30,7 +31,7 @@ var BluetoothLowEnergy = (function() {
 		var deviceNameNode = document.createElement("div");
 		deviceNameNode.className = "device-name";
 		var textNameNode = document.createTextNode(device.name + ' ' + 'rssi:'
-				+ device.txpowerlevel);
+				+ (device.txpowerlevel ? device.txpowerlevel : 'unknown'));
 		deviceNameNode.appendChild(textNameNode);
 
 		var deviceMacNode = document.createElement("div");
@@ -42,11 +43,11 @@ var BluetoothLowEnergy = (function() {
 		deviceNode.appendChild(deviceMacNode);
 
 		ConnectPage.getDevicesBox().appendChild(deviceNode);
-		console.log(device_list.length);
 		deviceNode.addEventListener("click", function() {
 			connect(device)
 		}, false);
 		device_list.push(device);
+		address_list.push(device.address);
 	};
 
 	var connectionSuccess = function() {
@@ -54,10 +55,7 @@ var BluetoothLowEnergy = (function() {
 		console.log("Connected to the device: " + device.name + " ["
 				+ device.address + "]");
 		gatt_service = device.getService(device.uuids[0]);
-		console.log(gatt_service);
-		console.log(gatt_service.characteristics);
-		gatt_characteristic = gatt_service.characteristics[1];
-		console.log(gatt_characteristic);
+		gatt_characteristic = gatt_service.characteristics[gatt_service.characteristics.length - 1];
 
 		BLINDCAP.pages.change("main");
 
@@ -108,6 +106,7 @@ var BluetoothLowEnergy = (function() {
 		console.log("start BLE scan");
 		ConnectPage.changeStatus("scan");
 		device_list = [];
+		address_list = [];
 		ConnectPage.getDevicesBox().innerHTML = "";
 		adapter.startScan(deviceFound);
 		setTimeout(stopScan, scan_time);
@@ -116,7 +115,7 @@ var BluetoothLowEnergy = (function() {
 	var deviceFound = function(device) {
 		console.log(device);
 
-		if (targetServiceUUIDs.indexOf(device.uuids[0].toLowerCase()) > -1) {
+		if ((targetServiceUUIDs.indexOf(device.uuids[0].toLowerCase()) > -1) && (address_list.indexOf(device.address) == -1)) {
 			console.log("Found device " + device.name);
 			addDevice(device);
 			if (device_list.length > 2) {
